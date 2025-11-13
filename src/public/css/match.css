@@ -1,0 +1,201 @@
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      background-color: #d4d4d4; /* fundo verde escuro como mesa */
+      font-family: Arial, sans-serif;
+    }
+
+    #mesa {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -40%) scale(0.75);
+        transform-origin: top center;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .mao {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      height: 160px;
+      align-items: flex-end;
+    }
+
+    .carta-mao {
+      width: 100px;
+      height: 140px;
+      background-color: #34a52a;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .carta-mao-selecionado{
+      width: 110px;
+      height: 154px;
+      border: 4px solid rgb(58, 157, 214);
+    }
+
+    .carta-mao-opcoes{
+      width: 110px;
+      height: 154px;
+    }
+
+    .carta-mao:hover{
+      width: 110px;
+      height: 154px;
+      background-color: #34a52a;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .carta-oponente{
+      border: 4px solid rgb(214, 58, 58);
+    }
+
+    .area-jogo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .coluna-lateral, .coluna-direita {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 800px;
+      gap: 20px;
+    }
+
+    .descarte, .baralho {
+      width: 120px;
+      height: 180px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .botaoturno{
+      border: 3px solid rgba(71, 71, 71, 0.61);
+      background-color: rgb(221, 252, 252);
+      width: 120px;
+      height: 80px;
+    }
+
+    .descarte {
+      background-color: aqua;
+    }
+
+    .baralho {
+      background-color: orange;
+    }
+
+    .campo {
+      display: grid;
+      grid-template-columns: repeat(5, 120px);
+      grid-template-rows: repeat(5, 150px);
+      gap: 10px;
+      background-color: #c2c2c2;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .tile {
+      background-color: brown;
+      border-radius: 6px;
+      box-shadow: inset 0 0 4px rgba(0,0,0,0.5);
+    }
+
+    .tile-ocupado {
+      background-color: #34a52a;
+      border-radius: 6px;
+      box-shadow: inset 0 0 4px rgba(0,0,0,0.5);
+    }
+
+    .tiledisponivel {
+      background-color: rgb(58, 157, 214);
+      border-radius: 6px;
+      box-shadow: inset 0 0 4px rgba(0,0,0,0.5);
+    }
+
+    @media (max-width: 1200px) {
+      .area-jogo {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .coluna-lateral, .coluna-direita {
+        flex-direction: row;
+        height: auto;
+      }
+
+      .campo {
+        transform: scale(0.9);
+      }
+    }
+
+    .circulo {
+      width: 55px; /* Defina a largura */
+      height: 55px; /* Defina a altura (igual à largura para um círculo) */
+      background-color: rgb(248, 245, 67); /* Defina a cor de fundo */
+      border-radius: 50%; /* Isso cria o formato circular */
+      align-self: center;
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+
+    .alvo {
+      width: 55px; /* Defina a largura */
+      height: 55px; /* Defina a altura (igual à largura para um círculo) */
+      background-color: rgb(248, 67, 67); /* Defina a cor de fundo */
+      border-radius: 50%; /* Isso cria o formato circular */
+      align-self: center;
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+
+
+    .texto-id{
+        position: fixed; /* Define a posição como fixa */
+        bottom: 20px;    /* 20px de distância da parte inferior */
+        right: 20px;     /* 20px de distância da parte direita */
+        color: rgb(32, 32, 32);
+        padding: 10px;
+        border-radius: 5px;
+        z-index: 999; /* Garante que o texto fique acima de outros elementos */
+    }
+
+    .texto-id-oponente{
+        position: fixed; /* Define a posição como fixa */
+        top: 20px;    /* 20px de distância da parte inferior */
+        right: 20px;     /* 20px de distância da parte direita */
+        color: rgb(32, 32, 32);
+        padding: 10px;
+        border-radius: 5px;
+        z-index: 999; /* Garante que o texto fique acima de outros elementos */
+    }
+
+    .mensagem_erro{
+        color: rgb(207, 0, 0);
+         font-size: 20px;
+    }

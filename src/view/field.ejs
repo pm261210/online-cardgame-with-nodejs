@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mesa de Jogo de Cartas</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <link rel="stylesheet" type="text/css" href="/css/match.css">
+</head>
+<body>
+
+  <div id="mesa">
+
+    <!-- Mão do jogador de cima -->
+    <div class="mao">
+      <% const playerRole = players[playerid]; %>
+      <% if (playerRole === 'player1') { %>
+        <% state.player2.hand.forEach(c => { %>
+          <div class="carta-mao"></div>
+        <% }); %>
+      <% } else { %>
+        <% state.player1.hand.forEach(c => { %>
+          <div class="carta-mao"></div>
+        <% }); %>
+      <% } %>
+    </div>
+
+    <!-- Área principal de jogo -->
+    <div class="area-jogo">
+      <!-- Pilhas de descarte (esquerda) -->
+      <div class="coluna-lateral">
+        <div class="descarte"></div>
+        <div class="descarte"></div>
+      </div>
+
+      <!-- Campo 5x5 -->
+      <div class="campo">
+        <!-- Geração de 25 tiles -->
+        <!-- Linha 5 a 1 e colunas 1 a 5 -->
+        <!-- IDs de 1-5 até 5-1, como no seu exemplo -->
+         <% if(playerRole == 'player1'){ %>
+          <% state.campo.forEach(r => { %>
+            <% r.forEach(c => { %>
+              <% if(c.content.length != 0 && c.content[0].owner != playerRole && c.attacable != undefined){ %>
+                <div style="position: relative; display: inline-block;">
+                  <div class="alvo" onclick="attack('<%= c.carta %>', '<%= c.id %>')"></div>
+                  <div class="tile-ocupado carta-oponente" style="width: 100%; height: 100%;" onclick="attack('<%= c.carta %>', '<%= c.id %>')"><%= c.id %></div>
+                </div>
+              <% }else if(c.content.length != 0 && c.content[0].owner != playerRole){ %>
+                <div class="tile-ocupado carta-oponente" id="<%= c.id %>"><%= c.content[0].card.currenthp %>/<%= c.content[0].hp %></div>
+              <% }else if(c.content.length != 0 && c.content[0].selecionado != undefined){ %>
+                <div class="carta-mao-selecionado tile-ocupado" id="<%= c.id %>" onclick="desselecionaCarta()"><%= c.content[0].card.currenthp %>/<%= c.content[0].hp %></div>
+              <% }else if(c.content.length != 0 && state.turnplayer != playerRole){ %>
+                <div class="tile-ocupado" id="<%= c.id %>"><%= c.content[0].card.currenthp %>/<%= c.content[0].hp %></div>
+              <% }else if(c.content.length != 0){ %>
+                <div class="tile-ocupado" id="<%= c.id %>" onclick="espacosDisponiveis('<%= c.content[0].id %>', '<%= c.content[0].card.movementfun %>', '<%= c.content[0].card.attackfun %>')"><%= c.content[0].card.currenthp %>/<%= c.content[0].hp %></div>
+              <% }else if(playerRole != state.turnplayer){ %>
+                <div class="tile" id="<%= c.id %>"><%= c.id %></div>
+              <% }else if(c.disponivel == true){ %>
+                <div class="tiledisponivel" id="<%= c.id %>" onclick="movimentaCarta('<%= c.carta %>', '<%= c.id %>')"><%= c.id %></div>
+              <% }else{ %>
+                <div class="tile" id="<%= c.id %>"><%= c.id %></div>
+              <% } %>
+            <% }); %>
+          <% }); %>
+        <% }else{ %>
+          <% state.campo.slice().reverse().forEach(r => { %>
+            <% r.slice().reverse().forEach(c => { %>
+              <% if(c.content.length != 0 && c.content[0].owner != playerRole && c.attacable != undefined){ %>
+                <div style="position: relative; display: inline-block;">
+                  <div class="alvo" onclick="attack('<%= c.carta %>', '<%= c.id %>')"></div>
+                  <div class="tile-ocupado carta-oponente" style="width: 100%; height: 100%;" onclick="attack('<%= c.carta %>', '<%= c.id %>')"><%= c.id %></div>
+                </div>
+              <% }else if(c.content.length != 0 && c.content[0].owner != playerRole){ %>
+                <div class="tile-ocupado carta-oponente" id="<%= c.id %>"><%= c.content[0].card.currenthp %>/<%= c.content[0].hp %></div>
+              <% }else if(c.content.length != 0 && c.content[0].selecionado != undefined){ %>
+                <div class="carta-mao-selecionado tile-ocupado" id="<%= c.id %>" onclick="desselecionaCarta('<%= c.carta %>', '<%= c.id %>')"><%= c.content[0].card.currenthp %>/<%= c.content[0].hp %></div>
+              <% }else if(c.content.length != 0 && state.turnplayer != playerRole){ %>
+                <div class="tile-ocupado" id="<%= c.id %>"><%= c.content[0].id %></div>
+              <% }else if(c.content.length != 0){ %>
+                <div class="tile-ocupado" id="<%= c.id %>" onclick="espacosDisponiveis('<%= c.content[0].id %>', '<%= c.content[0].card.movementfun %>', '<%= c.content[0].card.attackfun %>')"><%= c.content[0].card.currenthp %>/<%= c.content[0].hp %></div>
+              <% }else if(playerRole != state.turnplayer){ %>
+                <div class="tile" id="<%= c.id %>"><%= c.id %></div>
+              <% }else if(c.disponivel == true){ %>
+                <div class="tiledisponivel" id="<%= c.id %>" onclick="movimentaCarta('<%= c.carta %>', '<%= c.id %>')"><%= c.id %></div>
+              <% }else{ %>
+                <div class="tile" id="<%= c.id %>"><%= c.id %></div>
+              <% } %>
+            <% }); %>
+          <% }); %>
+        <% } %>
+      </div>
+
+      <!-- Pilhas de baralho (direita) -->
+      <div class="coluna-direita">
+        <div class="baralho" id="baralho2"></div>
+        <% if(playerRole == state.turnplayer){ %>
+          <div class="botaoturno" onclick="turnChange()">terminar turno</div>
+        <% } %>
+        <div class="baralho" id="baralho1"></div>
+      </div>
+    </div>
+    
+
+    <!-- Mão do jogador de baixo -->
+    <div class="mao" id="mao1">
+        <% state[playerRole].hand.forEach(c => { %>
+          <% if(state.turnplayer != playerRole){ %>
+            <div class="carta-mao"><%= c.id %></div>
+          <% }else if(c.opcoes != undefined){ %>
+            <div style="position: relative; display: inline-block;">
+              <div class="circulo" onclick="espacosDisponiveis('<%= c.id %>', '<%= c.card.movementfun %>', '<%= c.card.attackfun %>')"></div>
+              <div class="carta-mao carta-mao-opcoes" onclick="desselecionaCarta()"><%= c.id %></div>
+            </div>
+          <% }else if(c.selecionado != undefined){ %>
+            <div class="carta-mao carta-mao-selecionado"><%= c.id %></div>
+          <% }else{ %>
+            <div class="carta-mao" onclick="opcoesCarta('<%= c.id %>')"><%= c.id %></div>
+          <% } %>
+        <% }); %>
+    </div>
+
+  </div>
+  <% if(playerRole == state.turnplayer){ %>
+      <p>Seu turno</p>
+  <% }else{ %>
+      <p>Turno do oponente</p>
+  <% } %>
+
+
+</body>
+<script>
+    const baralho1 = document.getElementById('baralho1');
+    const socket = io();
+    const playerId = '<%= playerid %>';
+    const roomId = localStorage.getItem('roomId');
+    let game = {
+        roomId: <%- JSON.stringify(roomId) %>,
+        state: <%- JSON.stringify(state) %>,
+        players: <%- JSON.stringify(players) %>,
+        jogador: playerId,//<%- JSON.stringify(playerid) %>
+      }
+    // Reentrar na sala após recarregamento
+
+    if (playerId && roomId) {
+      socket.emit('joinRoom', { roomId, playerId });
+    }
+
+    async function comprar(){
+        window.location.href = '/deck/draw'; // <-- isso já recarrega com a nova mão
+    }
+    //baralho1.addEventListener('click', comprar);
+
+    //selecionando carta
+    function opcoesCarta(id){
+      socket.emit('opcoesCarta', {
+            roomId: game.roomId,  
+            idcarta: id,
+        });
+    }
+
+    function desselecionaCarta(){
+      socket.emit('opcoesCarta', {
+            roomId: game.roomId,  
+        });
+    }
+
+    function espacosDisponiveis(carta, movementfun, attackfun){
+      socket.emit('espacosDisponiveis', {
+            roomId: game.roomId,  
+            idcarta: carta,
+            movement: movementfun,
+            attack: attackfun,
+        });
+    }
+
+    function movimentaCarta(carta, espaco){
+      socket.emit('movimentaCarta', {
+            roomId: game.roomId,
+            idcarta: carta,
+            idespaco: espaco,
+        });
+    }
+
+    function turnChange(){
+      socket.emit('turnChange', {
+            roomId: game.roomId,
+        });
+    }
+
+    function attack(carta, espaco){
+      socket.emit('danificaCarta', {
+            roomId: game.roomId,
+            idcarta: carta,
+            idespaco: espaco,
+        });
+    }
+
+    socket.on('stateUpdate', (data) => {
+      window.location.href = `/match/${game.roomId}?playerid=${game.jogador}`;
+    });
+
+    socket.on('playerDisconnected', () => {
+      alert('O outro jogador desconectou.');
+      //window.location.href = '/';
+    });
+
+</script>
+</html>

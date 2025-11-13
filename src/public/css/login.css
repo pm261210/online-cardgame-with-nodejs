@@ -1,0 +1,392 @@
+    .texto-id{
+        position: fixed; /* Define a posição como fixa */
+        bottom: 20px;    /* 20px de distância da parte inferior */
+        right: 20px;     /* 20px de distância da parte direita */
+        color: rgb(32, 32, 32);
+        padding: 10px;
+        border-radius: 5px;
+        z-index: 999; /* Garante que o texto fique acima de outros elementos */
+    }
+
+    .texto-id-oponente{
+        position: fixed; /* Define a posição como fixa */
+        top: 20px;    /* 20px de distância da parte inferior */
+        right: 20px;     /* 20px de distância da parte direita */
+        color: rgb(32, 32, 32);
+        padding: 10px;
+        border-radius: 5px;
+        z-index: 999; /* Garante que o texto fique acima de outros elementos */
+    }
+
+    .mensagem_erro{
+        color: rgb(207, 0, 0);
+         font-size: 20px;
+    }
+
+.carta {
+  width: 100px;
+  height: 140px;
+  background: linear-gradient(180deg, #d2b48c 0%, #e8d4a2 100%);
+  border: 3px solid #fde400;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+  position: relative;
+  overflow: hidden;
+  padding-top: 2px;
+  box-sizing: border-box;
+}
+
+.trop{
+  background: linear-gradient(180deg, #d2b48c 0%, #e8d4a2 100%);
+}
+
+.trap{
+  background: linear-gradient(180deg, #d28ccf 0%, #cd98e2 100%);
+}
+
+.actve{
+  border: 3px solid #fde400;
+}
+
+.avelable{
+  border: 3px solid rgb(58, 157, 214);
+}
+
+.inactve{
+  border: 3px solid rgb(122, 122, 122);
+}
+
+.enemy{
+  border: 3px solid rgb(214, 58, 58);;
+}
+
+/* Nome da carta */
+.carta .name {
+  font-weight: bold;
+  font-size: 0.7rem;
+  font-family: 'Roboto Condensed', sans-serif;
+  text-align: left;
+  margin-top: 1px;
+  margin-left: 4px;
+  color: #2b1e0a;
+  /*border-bottom: 2px solid #8b6b3f;*/
+}
+
+.carta .class {
+  font-weight: bold;
+  font-size: 0.5rem;
+  font-family: 'Roboto Condensed', sans-serif;
+  text-align: left;
+  margin-top: 1px;
+  margin-left: 4px;
+  color: #555555;
+  text-transform: uppercase;
+  border-bottom: 2px solid #8b6b3f;
+  padding-bottom: 1px;
+}
+
+/* Nível (as estrelas) */
+.carta .nivel {
+    font-size: 0.7rem;
+    color: gold;
+    font-weight: bold;
+    position: absolute;
+    top: 14px;
+    right: 3px;
+    display: flex;
+    align-items: flex-end;
+    width: 50px;
+    height: 12px;
+    border-radius: 50%;
+    justify-content: flex-end;
+}
+
+/* Tipo (por ex. Guerreiro) */
+.carta .tipo {
+  position: absolute;
+  top: 38px;
+  right: 10px;
+  font-size: 0.8rem;
+  color: #3a2a15;
+  font-style: italic;
+}
+
+/* Imagem central */
+.carta .card-image {
+  display: block;
+  width: 86px;
+  height: 96px;
+  margin: 2px auto;
+  border: 2px solid #8b6b3f;
+  background: #fdf8e1;
+  object-fit: contain;
+}
+
+/* Caixa de descrição */
+.carta .descrisao {
+  background: #f4e9c8;
+  border: 2px solid #8b6b3f;
+  border-radius: 4px;
+  padding: 6px;
+  margin: 6px 4px;
+  font-size: 0.8rem;
+  text-align: justify;
+  height: 80px;
+  overflow: hidden;
+}
+
+/* Barra inferior com status */
+.carta .status-bar {
+  position: absolute;
+  bottom: 2px;
+  left: -4px;
+  width: 100%;
+  text-align: right;
+  padding-right: 12px;
+  font-weight: bold;
+  color: #2b1e0a;
+  font-size: 0.7rem;
+  justify-content: center; 
+  align-items: flex-end;   
+  gap: 10px
+}
+
+.carta .status-bar img {
+  width: 18px;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+.carta .hp, .carta .atack {
+  display: inline-block;
+  margin-left: 8px;
+}
+
+/* Ícones pequenos (como coração e espada) */
+.carta .icon {
+  width: 10px;
+  height: 10px;
+  vertical-align: middle;
+}
+
+/* Cria os "lados" de cima do coração */
+.heart {
+  position: relative;
+  width: 12px;
+  height: 11px;
+  left: 75px;
+  bottom: -9px;
+  background-color: red;
+  transform: rotate(-45deg);
+  margin: 0 0px 0 0;
+}
+
+.heart::before,
+.heart::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 11px;
+  background-color: red;
+  border-radius: 50%;
+}
+
+/* Bolinha da esquerda */
+.heart::before {
+  top: -5px;
+  left: 0;
+}
+
+/* Bolinha da direita */
+.heart::after {
+  top: 0;
+  left: 5px;
+}
+
+.heart span {
+  position: absolute;
+  transform: translate(-235%, -20%) rotate(44deg);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: bold;
+  font-family: sans-serif;
+  z-index: 1;
+  pointer-events: none; /* evita interferência em cliques */
+}
+
+.sword {
+    position: relative;
+    width: 10px;
+    height: 12px;
+    left: 55px;
+    top: -4px;
+    background: #c3c3c3;
+    border-radius: 2px;
+    transform: rotate(45deg);
+}
+
+/* Ponta da espada */
+.sword::before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid #c3c3c3;
+}
+
+/* Punho */
+.sword::after {
+    content: "";
+    position: absolute;
+    bottom: 1px;
+    left: -1px;
+    width: 12px;
+    height: 3px;
+    box-shadow: 0 3px 0 #331a00;
+}
+
+.sword span {
+    position: absolute;
+    transform: translate(-235%, -10%) rotate(-44deg);
+    font-size: 0.8rem;
+    font-weight: bold;
+    font-family: sans-serif;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.sword span::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 5px;
+    height: 6px;
+    background: #331a00;
+    transform: rotate(135deg) translateX(12px) translatey(-4.5px);
+}
+
+.delay{
+  position: relative;
+  width: 16px;
+  height: 16px;
+  border: 4px solid #3f758b;
+  background-color: white;
+  left: 73px;
+  bottom: 85px;
+  border-radius: 50%;
+}
+
+.delay::before {
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 4px;
+    background-color: #3f758b;
+    transform: translate(-120%, -210%) rotate(180deg);
+    border-radius: 20%;
+}
+
+.delay span {
+    position: absolute;
+    transform: translate(-270%, 5%);
+    color: #331a00;
+    font-size: 0.8rem;
+    font-weight: bold;
+    font-family: sans-serif;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.trap .rowrange{
+    position: relative;
+    width: 11px;
+    height: 12px;
+    background-color: rgb(11, 213, 248);
+    left: 55px;
+    bottom: -25px;
+    border-radius: 10%;
+    text-align: center;
+}
+
+.rowrange::before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 9px solid rgb(11, 213, 248);
+    left: 11px;
+    border-radius: 20%;
+    bottom: -4px;
+}
+
+.rowrange::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 9px solid rgb(11, 213, 248);
+    left: -9px;
+    bottom: -4px;
+    border-radius: 20%;
+}
+
+.rowrange span, .collumrange span{
+    color: rgb(255, 253, 251);
+    font-size: 0.7rem;
+    font-weight: bold;
+    font-family: sans-serif;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.trap .collumrange{
+    position: relative;
+    width: 12px;
+    height: 12px;
+    background-color: rgb(11, 213, 248);
+    left: 79px;
+    bottom: -14px;
+    border-radius: 10%;
+    text-align: center;
+}
+
+.collumrange::before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 9px solid rgb(11, 213, 248);
+    top: 11px;
+    border-radius: 20%;
+    left: -4px;
+    bottom: -5px;
+}
+
+.collumrange::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 9px solid rgb(11, 213, 248);
+    top: -9px;
+    border-radius: 20%;
+    left: -4px;
+}
+
+.divisorias{
+  display: flex;
+  justify-content: space-around;
+}
+

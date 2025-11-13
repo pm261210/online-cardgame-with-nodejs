@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+<body>
+  <h1>Login</h1>
+  <form action="/users/login" method="POST">
+    <label>Usuário:</label>
+    <input type="text" name="username" required />
+    <br />
+    <label>Senha:</label>
+    <input type="password" name="password" id="password" required />
+    <button type="button" id="togglePassword">Mostrar</button>
+    <br />
+    <button type="submit">Entrar</button>
+  </form>
+  <% if (message) { %>
+    <p class="mensagem_erro"><%= message %></p>
+  <% } %>
+  <p>Não tem conta? <a href="/register">Cadastre-se</a></p>
+</body>
+<script>
+    const passwordInput = document.getElementById('password');
+    const toggleButton = document.getElementById('togglePassword');
+
+    toggleButton.addEventListener('click', () => {
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleButton.textContent = 'Ocultar';
+      } else {
+        passwordInput.type = 'password';
+        toggleButton.textContent = 'Mostrar';
+      }
+    });
+  </script>
+</html>
