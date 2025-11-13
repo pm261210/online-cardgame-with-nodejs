@@ -1,51 +1,42 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <title>Multiplayer</title>
-  <link rel="stylesheet" type="text/css" href="/css/styles.css">
-  <script src="/socket.io/socket.io.js"></script>
-</head>
-<body>
-  <h1>Conectando ao jogo...</h1>
+<%- include('partials/header') %>
+
+<div class="container py-5">
+  <h2>Conectando ao jogo...</h2>
   <p id="status">Procurando oponente...</p>
+</div>
 
-  <script>
-    const socket = io();
-    let game = null;
-    let playerId = null;
-    socket.on('waitingForOpponent', () => {
-      document.getElementById('status').innerText = 'Esperando outro jogador...';
-    });
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+  let game = null;
+  let playerId = null;
 
-    socket.on('gameStart', ({ roomId, state, players}) => {
-      localStorage.setItem('playerId', players[socket.id].id);
+  socket.on('waitingForOpponent', () => {
+    const el = document.getElementById('status');
+    if (el) el.innerText = 'Esperando outro jogador...';
+  });
+
+  socket.on('gameStart', ({ roomId, state, players}) => {
+    // guarda info e redireciona para a partida
+    try {
       localStorage.setItem('roomId', roomId);
+      const mySocketId = Object.keys(players).find(k => players[k] && players[k].id);
+    } catch (e) {
+      // ignore
+    }
+    window.location.href = `/match/${roomId}`;
+  });
 
-      game = {
-        roomId: roomId,
-        state: state,
-        players: players,
-        jogador: players[socket.id].id,
-      };
-      window.location.href = `/match/${roomId}?playerid=${players[socket.id].id}`;
+  socket.on('playerDisconnected', () => {
+    alert('O outro jogador desconectou.');
+    window.location.href = '/';
+  });
 
-    });
+  socket.on('assignPlayerId', (id) => {
+    localStorage.setItem('playerId', id);
+    playerId = id;
+  });
+</script>
 
+<%- include('partials/footer') %>
 
-    socket.on('playerDisconnected', () => {
-      alert('O outro jogador desconectou.');
-      window.location.href = '/';
-    });
-
-    
-
-    socket.on('assignPlayerId', (id) => {
-      localStorage.setItem('playerId', id);
-      playerId = id;
-    });
-
-
-  </script>
-</body>
-</html>
