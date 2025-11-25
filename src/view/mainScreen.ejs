@@ -1,46 +1,142 @@
-<%- include('partials/header') %>
-
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1>Início</h1>
-        <button class="btn btn-primary" onclick="paginabatalha()">Start</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/css/login.css">
+</head>
+<body>
+    <h1>COMEÇO</h1>
+    <button onclick="paginabatalha()">Procurar oponente</button>
+    <button onclick="paginabaralho()">Baralhos</button>
+    <% if(user.selectedDeck == null || user.selectedDeck == ""){ %>
+        <div> nenhum deck selecionado</div>
+    <% }else{ %>
+        <% const deckname = baralhos.find(item => item.id_deck == user.selectedDeck) %>
+        <div> deck selecionado: <%= deckname.name %></div>
+    <% } %>
+    <div class="texto-id">
+        userid: <%= user.id %>
     </div>
 
-    <div class="texto-id mb-3">userid: <%= user && user.id ? user.id : '---' %></div>
-
     <div class="divisorias">
-        <div>
-            <!-- exemplo de cartas (mantive a estrutura original, apenas dentro do container) -->
-            <div class="carta trop actve" id="1">
-                <div class="name">Slime blueberry</div><div class="nivel">★★★★</div>
-                <div class="class">slime</div>
-                <img src="/images/slime blu.png" class="card-image">
-                <div class="status-bar">
-                    <div class="heart"><span class="hp">2</span></div>
-                    <div class="sword"><span class="atack">1</span></div>
-                </div>
-            </div>
+    <div>
+    <div class="carta trop actve" id="1">
+        <div class="name">Slime blueberry</div><div class="nivel">★★★★</div>
+        <div class="class">slime</div>
+        <img src="/images/slime blu.png" class="card-image">
+        <div class="status-bar">
+        <div class="heart">    <span class="hp">2</span></div>
+        <div class="sword">    <span class="atack">1</span></div>
         </div>
-        <div>
-            <div class="carta trap actve" id="2">
-                <div class="name">Slime blueberry</div>
-                <div class="class">slime</div>
-                <div class="border"><img src="/images/slime blu.png" class="card-image"></div>
-                <div class="status-bar">
-                    <div class="rowrange"><span>1</span></div>
-                    <div class="collumrange"><span>2</span></div>
-                    <div class="delay"><span class="hp">2</span></div>
-                </div>
-            </div>
+    </div>
+
+    <div class="carta trop inactve" id="1">
+        <div class="name">Slime blueberry</div><div class="nivel">★★★★</div>
+        <div class="class">slime</div>
+        <img src="/images/slime blu.png" class="card-image">
+        <div class="status-bar">
+        <div class="heart">    <span class="hp">2</span></div>
+        <div class="sword">    <span class="atack">1</span></div>
+        </div>
+    </div>
+
+    <div class="carta trop avelable" id="1">
+        <div class="name">Slime blueberry</div><div class="nivel">★★★★</div>
+        <div class="class">slime</div>
+        <img src="/images/slime blu.png" class="card-image">
+        <div class="status-bar">
+        <div class="heart">    <span class="hp">2</span></div>
+        <div class="sword">    <span class="atack">1</span></div>
+        </div>
+    </div>
+
+    <div class="carta trop enemy" id="1">
+        <div class="name">Slime blueberry</div><div class="nivel">★★★★</div>
+        <div class="class">slime</div>
+        <img src="/images/slime blu.png" class="card-image">
+        <div class="status-bar">
+        <div class="heart">    <span class="hp">2</span></div>
+        <div class="sword">    <span class="atack">1</span></div>
         </div>
     </div>
 </div>
+<div>
+    <div class="carta trap actve" id="1">
+        <div class="name">Slime blueberry</div>
+        <div class="class">slime</div>
+        <div class="border"><img src="/images/slime blu.png" class="card-image"></div>
+        <div class="status-bar">
+        <div class="rowrange">  <span>1</span></div>
+        <div class="collumrange">   <span>2</span></div>
+        <div class="delay">    <span class="hp">2</span></div>
+        </div>
+    </div>
 
-<%- include('partials/footer') %>
+    <div class="carta trap inactve" id="1">
+        <div class="name">Slime blueberry</div>
+        <div class="class">slime</div>
+        <div class="border"><img src="/images/slime blu.png" class="card-image"></div>
+        <div class="status-bar">
+        <div class="rowrange">  <span>1</span></div>
+        <div class="collumrange">   <span>2</span></div>
+        <div class="delay">    <span class="hp">2</span></div>
+        </div>
+    </div>
 
+    <div class="carta trap avelable" id="1">
+        <div class="name">Slime blueberry</div>
+        <div class="class">slime</div>
+        <div class="border"><img src="/images/slime blu.png" class="card-image"></div>
+        <div class="status-bar">
+        <div class="rowrange">  <span>1</span></div>
+        <div class="collumrange">   <span>2</span></div>
+        <div class="delay">    <span class="hp">2</span></div>
+        </div>
+    </div>
+
+    <div class="carta trap enemy" id="1">
+        <div class="name">Slime blueberry</div>
+        <div class="class">slime</div>
+        <div class="border"><img src="/images/slime blu.png" class="card-image"></div>
+        <div class="status-bar">
+        <div class="rowrange">  <span>1</span></div>
+        <div class="collumrange">   <span>2</span></div>
+        <div class="delay">    <span class="hp">2</span></div>
+        </div>
+</div>
+</div>
+</div>
+</body>
 <script>
+    let buffer = "";  
+
     function paginabatalha(){
         window.location.href = '/filadeespera';
     }
-</script>
 
+    function paginabaralho(){
+        window.location.href = '/decks/user/<%= user.id %>';
+    }
+
+    document.addEventListener("keydown", (event) => {
+    // ignora se estiver digitando em campos de texto (input, textarea)
+    if (event.target.tagName === "INPUT" || event.target.tagName === "TEXTAREA") {
+      return;
+    }
+
+    buffer += event.key.toLowerCase();  // adiciona a tecla ao buffer
+    
+    // mantém o buffer do tamanho da palavra
+    if (buffer.length > 6) {
+      buffer = buffer.slice(-palavra.length);
+    }
+
+    // se corresponde à palavra secreta → redireciona
+    if (buffer == 'secret') {
+        window.location.href = '/decks';
+    }
+  });
+</script>
+</html>

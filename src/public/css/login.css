@@ -390,3 +390,159 @@
   justify-content: space-around;
 }
 
+.deck {
+            text-align: center;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 2px 5px rgba(0,0,0,0.15);
+            transition: transform 0.2s;
+            height: 190px;
+            /*cursor: pointer;*/
+        }
+
+        .deck:hover {
+            transform: scale(1.05);
+        }
+
+        .deck-img {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 10px auto;
+            border-radius: 8px;
+            background-color: var(--color);
+        }
+
+        .deck-name {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .deck-invalid{
+          position: relative;
+          top: -100px;
+          color: red;
+          font-size: 30px;
+        }
+
+.container {
+        display: flex;
+        gap: 20px;
+    }
+
+    .deck-area, .all-cards-area {
+        flex: 1;
+        background: white;
+        border-radius: 10px;
+        padding: 15px;
+        height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        flex-direction: column;
+    }
+
+    .deck-container{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    h2 {
+        text-align: center;
+    }
+
+    .cards-grid {
+        flex: 1;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        min-height: 90%;
+    }
+
+    button#saveDeck {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 30px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        background-color: #4caf50;
+        color: white;
+        cursor: pointer;
+    }
+
+    .card-count {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 12px;
+}
+
+#colorSection {
+    margin-bottom: 20px;
+}
+
+.color-preview {
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    margin-left: 10px;
+    border-radius: 6px;
+    border: 2px solid #444;
+}
+
+.color-dropdown {
+    background: white;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.hidden {
+    display: none;
+}
+
+.color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    gap: 18px;
+}
+
+.color-option {
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: transform .1s;
+}
+
+.color-option:hover {
+    transform: scale(1.05);
+}
+
+.menu-deck {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 1000;
+}
+
+.menu-deck button {
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+.menu-deck button:hover {
+    background-color: #eee;
+}

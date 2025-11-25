@@ -1,10 +1,16 @@
 // routes/baralhoRoute.js
 const express = require('express');
 const router = express.Router();
-const { criarBaralho, listarBaralhos, deletarBaralho } = require('../controllers/deckController');
+const deckController = require('../controllers/deckController');
 
-router.post('/newdeck', criarBaralho);
-router.get('/', listarBaralhos);
-router.delete('/deleteid/:id', deletarBaralho);
+router.get('/newdeck/:id', deckController.criarBaralho);
+router.get('/id/:id/user/:iduser', deckController.editarBaralho);
+router.post('/newcard', deckController.criarCarta);
+router.post('/save/:id_deck', deckController.atualizarDeck);
+//router.get('/', deckController.listarBaralhos);
+router.get('/', deckController.addcard);
+router.get('/cards', deckController.getCards);
+router.get('/user/:id', deckController.listarBaralhos);
+router.get('/delete/:id/user/:iduser', deckController.deletarBaralho);
 
 module.exports = router;

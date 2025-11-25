@@ -12,6 +12,18 @@ const Baralho = sequelize.define('deck', {
     type: DataTypes.UUID,
     allowNull: false,
   },
+   deck: {
+    type: DataTypes.JSON,
+    allowNull: true,
+  },
+  color: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+    name: {
+      type: DataTypes.STRING(25),
+      allowNull: true
+  },
 }, {
   tableName: 'deck',
   timestamps: false // Desative se sua tabela não tiver createdAt/updatedAt

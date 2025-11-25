@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/css/login.css">
+</head>
+<body>
+    <button onclick="window.location='/users/main/<%= user.id %>'">voltar</button>
+    <h1>Baralhos do Usuário <%= user.username %></h1>
+
+    <div class="deck-container" id="deck-container">
+
+        <div class="deck" onclick="window.location='/decks/newdeck/<%= user.id %>'">
+            <img src="/images/decks/deck-novo.png" alt="Criar baralho" class="deck-img">
+            <div class="deck-name">Criar deck</div>
+        </div>
+
+        <% baralhos.forEach(baralho => { %>
+            <% if(user.selectedDeck == baralho.id_deck){ %>
+                <div class="deck" onclick="openMenu(event, '<%= baralho.id_deck %>', '<%= baralho.deck.length %>')">
+                    <img src="/images/decks/deck-<%= baralho.color %>.png" class="deck-img">
+                    <div class="deck-name">
+                        <%= baralho.name %>
+                    </div>
+                    <img src="/images/blue-check.png" style="position: relative; top: -200px; left: 50px; height: 50px; width: 50px;">
+                </div>
+            <% }else if(baralho.deck.length >= 20){ %>
+                <div class="deck" onclick="openMenu(event, '<%= baralho.id_deck %>', '<%= baralho.deck.length %>')">
+                    <img src="/images/decks/deck-<%= baralho.color %>.png" class="deck-img" >
+                    <div class="deck-name">
+                        <%= baralho.name %>
+                    </div>
+                </div>
+            <% }else{ %>
+                <div class="deck" onclick="openMenu(event, '<%= baralho.id_deck %>', '<%= baralho.deck.length %>')">
+                    <img src="/images/decks/deck-<%= baralho.color %>.png" class="deck-img" >
+                    <div class="deck-name">
+                        <%= baralho.name %>
+                    </div>
+                    <div style="position: relative; top: -100px; color: red; font-size: 30px;">deck invalido</div>
+                </div>
+            <% } %>
+        <% }) %>
+
+    </div>
+    <div id="deck-menu" class="menu-deck">
+        <button id="select-btn">Selecionar</button>
+        <button id="edit-btn">Editar</button>
+        <button id="delete-btn">Deletar</button>
+    </div>
+    
+</body>
+<script>
+
+    document.addEventListener("click", function(e) {
+        const menu = document.getElementById("deck-menu");
+        const deck = document.getElementById("deck-container");
+        if (!menu.contains(e.target) && !deck.contains(e.target)) {
+            menu.style.display = "none";
+        }
+     }); 
+
+     function openMenu(event, deckId, length) {
+        selectedDeckId = deckId;
+        selectedDeckLength = length;
+        const menu = document.getElementById("deck-menu");
+
+        // posiciona o menu onde o usuário clicou
+        menu.style.left = event.pageX + "px";
+        menu.style.top = event.pageY + "px";
+        menu.style.display = "flex";
+
+        document.getElementById("select-btn").onclick = () => {
+            if(selectedDeckLength >= 20){
+                fetch(`/users/update/<%= user.id %>`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: '<%= user.username %>',  password: '<%= user.password %>', selectedDeck: deckId})
+                })
+                window.location.href = '/decks/user/<%= user.id %>';
+            } else{
+                alert('deck deve conter pelo menos 20 cartas');
+            }
+        };
+    
+        document.getElementById("edit-btn").onclick = () => {
+            window.location = `/decks/id/${deckId}/user/<%= user.id %>`;
+        };
+
+        // botão deletar
+        document.getElementById("delete-btn").onclick = () => {
+            if (confirm("Tem certeza que deseja deletar este deck?")) {
+                fetch(`/decks/delete/${deckId}/user/<%= user.id %>`);
+                window.location.href = '/decks/user/<%= user.id %>';
+            }
+        };
+    }   
+
+</script>
+</html>

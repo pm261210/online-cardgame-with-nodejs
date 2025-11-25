@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/css/login.css">
+</head>
+<body>
+    <button onclick="window.location='/decks/user/<%= user.id %>'">voltar</button>
+    <h1>Editar Baralho:  
+    <input 
+      type="text" 
+      id="deckName" 
+      value="<%= baralho.name %>" 
+      style="font-size: 20px; padding: 5px; margin-left: 10px;">
+    </h1>
+
+    <div id="colorSection">
+
+    <span style="font-size: 20px; font-weight: bold;">Cor:</span>
+
+    <!-- imagem atual da cor -->
+    <img id="currentColorImage" src="/images/colors/<%= baralho.color %>.png" class="color-preview">
+
+    <!-- área que abre e fecha -->
+    <div id="colorDropdown" class="color-dropdown hidden">
+
+        <div class="color-grid">
+            <% availableColors = ['amarelo','azul','azulescuro','beje','branco','cinza','cinzaclaro','laranja','marrom','roxo','roza','verde','vermelho','vermelhoescuro','violeta'] %>
+            <% availableColors.forEach(color => { %>
+                <img src="/images/colors/<%= color %>.png" class="color-option" data-color="<%= color %>">
+            <% }) %>
+        </div>
+
+    </div>
+</div>
+<h3 id="cardsnumber"></h3>
+<div class="container">
+    <!-- Área esquerda: Deck -->
+    <div class="deck-area" id="deckArea">
+        <h2>Cartas no Deck</h2>
+        <div class="cards-grid" id="deckCards">
+            
+            <% 
+            const sortedDeckCards = baralho.deck
+                .map(d => {
+                    const cardData = cards.find(c => c.id_card === d.id);
+                    return {...d, card: cardData.card};
+                })
+                .sort((a,b) => a.card.name.localeCompare(b.card.name));
+            sortedDeckCards.forEach(d => { 
+            %>
+                <div class="carta <%= d.card.type %>" draggable="true" data-id="<%= d.id %>">
+                    <div class="name"><%= d.card.name %></div>
+                    <div class="nivel"><%= '★'.repeat(d.card.level) %></div>
+                    <div class="class"><%= d.card.class %></div>
+                    <img src="/images/<%= d.card.image %>" class="card-image">
+                    <div class="status-bar">
+                        <div class="heart"><span class="hp"><%= d.card.hp %></span></div>
+                        <div class="sword"><span class="atack"><%= d.card.atk %></span></div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+    
+
+    <!-- Área direita: Todas as cartas -->
+    <div class="all-cards-area" id="allCardsArea">
+        <h2>Todas as Cartas</h2>
+        <div class="cards-grid" id="allCards">
+            <% cards.forEach(c => { %>
+                <div class="carta <%= c.card.type %>" draggable="true" data-id="<%= c.id_card %>">
+                    <div class="name"><%= c.card.name %></div>
+                    <div class="nivel"><%= '★'.repeat(c.card.level) %></div>
+                    <div class="class"><%= c.card.class %></div>
+                    <img src="/images/<%= c.card.image %>" class="card-image">
+                    <div class="status-bar">
+                        <div class="heart"><span class="hp"><%= c.card.hp %></span></div>
+                        <div class="sword"><span class="atack"><%= c.card.atk %></span></div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</div>
+
+<button id="saveDeck">Salvar</button>
+
+<script>
+const deckArea = document.getElementById('deckCards');
+const numberdisplay = document.getElementById('cardsnumber');
+let numberofcards = deckArea.children.length;
+numberdisplay.innerText = `numero de cartas: ${numberofcards}`
+const allCardsArea = document.getElementById('allCards');
+
+let draggedCard = null;
+
+const currentColorImage = document.getElementById("currentColorImage");
+const colorDropdown = document.getElementById("colorDropdown");
+
+// variável para armazenar nova cor
+let selectedColor = "<%= baralho.color %>";
+
+currentColorImage.addEventListener("click", () => {
+    colorDropdown.classList.toggle("hidden");
+});
+
+document.querySelectorAll(".color-option").forEach(img => {
+    img.addEventListener("click", () => {
+        selectedColor = img.getAttribute("data-color");
+
+        // muda a visualização imediatamente
+        currentColorImage.src = `/images/colors/${selectedColor}.png`;
+        // fecha o dropdown
+        colorDropdown.classList.add("hidden");
+    });
+});
+
+// Drag start
+document.addEventListener('dragstart', e => {
+    if(e.target.classList.contains('carta')){
+        draggedCard = e.target;
+    }
+});
+
+// Drag end
+document.addEventListener('dragend', e => {
+    draggedCard = null;
+});
+
+// Allow drop
+[deckArea, allCardsArea].forEach(area => {
+    area.addEventListener('dragover', e => e.preventDefault());
+    area.addEventListener('drop', e => {
+        e.preventDefault();
+        if(!draggedCard) return;
+
+        const targetArea = e.currentTarget;
+        const cardId = draggedCard.getAttribute('data-id');
+
+        if(targetArea === deckArea){
+            // Adicionar ao deck se ainda não exceder 3 cópias e 40 cartas
+            const existingCopies = Array.from(deckArea.children).filter(c => c.getAttribute('data-id') === cardId).length;
+            if(existingCopies >= 3) return;
+            if(deckArea.children.length >= 40) return;
+
+            const clone = draggedCard.cloneNode(true);
+            clone.setAttribute('draggable', 'true');
+            deckArea.appendChild(clone);
+            let numberofcards = deckArea.children.length;
+            numberdisplay.innerText = `numero de cartas: ${numberofcards}`
+        } else if(targetArea === allCardsArea){
+            // Remover do deck se arrastar de deck para todas
+            if(draggedCard.parentElement === deckArea){
+                draggedCard.remove();
+                let numberofcards = deckArea.children.length;
+                numberdisplay.innerText = `numero de cartas: ${numberofcards}`
+            }
+        }
+    });
+});
+
+// Salvar deck
+document.getElementById('saveDeck').addEventListener('click', () => {
+    const deckName = document.getElementById('deckName').value;
+    const deckData = Array.from(deckArea.children).map((c, index) => {
+        return { slot: index + 1, id: c.getAttribute('data-id') };
+    });
+
+    fetch(`/decks/save/<%= baralho.id_deck %>`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deck: deckData,  name: deckName, color: selectedColor})
+    })
+    .then(res => res.json())
+    .then(data => alert('Deck salvo com sucesso!'))
+    .catch(err => alert('Erro ao salvar deck'));
+});
+</script>
+    
+</body>
+</html>

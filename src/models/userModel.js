@@ -15,10 +15,14 @@ const User = sequelize.define('users', {
   password: {
     type: DataTypes.STRING,
     allowNull: false,
-  }
+  },
+   selectedDeck: {
+    type: DataTypes.UUID,
+    allowNull: true,
+  },
 }, {
   tableName: 'users',
-  //timestamps: false 
+  timestamps: false 
 });
 
 module.exports = User;

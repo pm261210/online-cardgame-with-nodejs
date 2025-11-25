@@ -1,14 +1,15 @@
 const User = require('../models/userModel');
+const Baralho = require('../models/deckModel');
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const path = require('path');
 
 exports.createUser = async (req, res) => {
   try {
-    const { name, password } = req.body;
+    const { username, password } = req.body;
     const user = await User.create({
       id: uuidv4(),
-      username: name,
+      username: username,
       password: password 
     });
     res.render(path.join(__dirname, '..', 'view', 'mainScreen.ejs'), {user})
@@ -36,8 +37,14 @@ exports.loginUser = async (req, res) => {
 
     //const valid = await bcrypt.compare(password, user.password);
     //if (!valid) return res.render(path.join(__dirname, '..', 'view', 'login.ejs'), {message: 'Senha incorreta'});
+    const baralhos = await Baralho.findAll({
+      order: [['name', 'ASC']],
+      where: {
+        id_user: user.id
+    }
+    });
     if(password === user.password){
-      res.render(path.join(__dirname, '..', 'view', 'mainScreen.ejs'), {user});
+      res.render(path.join(__dirname, '..', 'view', 'mainScreen.ejs'), {baralhos, user});
     }else{
       res.render(path.join(__dirname, '..', 'view', 'login.ejs'), {message: 'Senha incorreta'});
     }
@@ -59,6 +66,27 @@ exports.getUserById = async (req, res) => {
   }
 };
 
+exports.updateUser = async (req, res) => {
+  try {
+    const { username, password, selectedDeck } = req.body;
+    const [quantidadeDeLinhasAtualizadas] = await User.update(
+      { 
+       username: username,
+       password: password, 
+       selectedDeck: selectedDeck
+      },
+      {
+        where: {
+          id:  req.params.id, // Condição para localizar o deck específico
+        }
+      }
+    );
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao buscar usuário' });
+  }
+};
+
 exports.deleteUser = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -74,6 +102,22 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
+exports.mainscreen = async (req, res) =>{
+  try{
+    const user = await User.findByPk(req.params.id);
+    const baralhos = await Baralho.findAll({
+      order: [['name', 'ASC']],
+      where: {
+        id_user: user.id
+    }
+    });
+    res.render(path.join(__dirname, '..', 'view', 'mainScreen.ejs'), {user, baralhos});
+  }catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao deletar usuário' });
+  }
+}
+/*
 exports.updateUser = async (req, res) => {
   try {
     const { id } = req.params; // ID da URL
@@ -95,4 +139,4 @@ exports.updateUser = async (req, res) => {
     console.error('Erro ao atualizar usuário:', error);
     return res.status(500).json({ message: 'Erro interno do servidor.' });
   }
-};
+};*/
