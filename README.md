@@ -4,9 +4,12 @@
 <img loading="lazy" src="http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge"/>
 </p>
 
-### Tópicos 
+### Tópicos
+- [Descrição do Projeto](#descrição-do-projeto)
 
-- [Descrição do projeto](#descrição-do-projeto)
+  
+- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+
 
 
 
@@ -19,3 +22,5 @@
 Esse Trabalho é um jogo de cartas simples que permite uma experiência de batalhas PvP (player vs Player) em tempo real, utilizando o banco de dados postgre e o socket com o node.js
 
 </p>
+
+##  Tecnologias Utilizadas
