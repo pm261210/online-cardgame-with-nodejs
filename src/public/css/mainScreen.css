@@ -1,0 +1,183 @@
+/* mainScreen.css - estilos para a página Main Screen */
+:root{
+  --bg-1: #0f1724; /* midnight */
+  --bg-2: #1f2a44; /* deep blue */
+  --card-bg: rgba(255,255,255,0.04);
+  --accent: #ffd54a; /* gold */
+  --muted: #b7c0d9;
+  --glass: rgba(255,255,255,0.06);
+}
+
+html,body{
+  height:100%;
+  margin:0;
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: linear-gradient(180deg,var(--bg-1) 0%, var(--bg-2) 100%);
+  color: #e6eef8;
+}
+
+.container-center{
+  max-width:1100px;
+  margin:40px auto;
+  padding:28px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius:12px;
+  box-shadow: 0 10px 30px rgba(3,8,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+.header-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+
+.header-left h1{
+  margin:0;
+  font-size:1.6rem;
+  letter-spacing:1px;
+  color:var(--accent);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+}
+
+.header-right{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+
+.btn-primary{
+  /* Botão preenchido - vermelho, maior e com boa legibilidade */
+  background: linear-gradient(180deg,#d9534f,#c12b2b);
+  color:#fff;
+  border:none;
+  padding:14px 24px;
+  border-radius:12px;
+  font-weight:800;
+  font-size:1.05rem;
+  cursor:pointer;
+  box-shadow: 0 10px 28px rgba(193,43,43,0.28), 0 2px 6px rgba(0,0,0,0.45);
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+}
+
+.btn-primary:hover{
+  transform: translateY(-3px);
+  filter:brightness(1.04);
+  box-shadow: 0 14px 40px rgba(193,43,43,0.32), 0 4px 10px rgba(0,0,0,0.5);
+}
+
+.btn-ghost{
+  /* Versão outline vermelha */
+  background:transparent;
+  border:2px solid rgba(209,63,63,0.95);
+  color:#ffdede;
+  padding:12px 20px;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:700;
+  font-size:1.0rem;
+}
+
+.btn-ghost:hover{
+  background: rgba(209,63,63,0.06);
+  transform: translateY(-2px);
+}
+
+/* Aplicar estilo base para botões sem classe (fallback) */
+button{
+  font-family:inherit;
+  font-weight:700;
+  font-size:1.0rem;
+  padding:12px 20px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+}
+
+.main-grid{
+  display:grid;
+  grid-template-columns: 1fr 320px;
+  gap:24px;
+  margin-top:18px;
+}
+
+.panel{
+  background: var(--card-bg);
+  border-radius:10px;
+  padding:18px;
+  min-height:200px;
+  border:1px solid rgba(255,255,255,0.03);
+}
+
+.side-panel{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.selected-deck{
+  background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  padding:14px;
+  border-radius:8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+
+.decks-list{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.deck-card{
+  background:var(--glass);
+  border-radius:8px;
+  padding:10px;
+  min-width:120px;
+  text-align:center;
+  color:var(--muted);
+  border:1px solid rgba(255,255,255,0.02);
+}
+
+.texto-id{
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  color: #0b1220;
+  background: linear-gradient(180deg,#ffd54a,#f7c84a);
+  padding:8px 12px;
+  border-radius:8px;
+  font-weight:700;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.45);
+  z-index:1000;
+}
+
+/* Ajustes para o <h1> e botões do body quando não há container */
+body > h1{ display:none; }
+
+/* Mobile */
+@media (max-width:900px){
+  .main-grid{ grid-template-columns: 1fr; }
+  .container-center{ margin:18px; padding:16px; }
+}
+
+/* Pequenos detalhes para inputs/alerts nativos */
+.alert-inline{
+  background: rgba(255, 92, 92, 0.08);
+  color: #ffd0d0;
+  padding:8px 10px;
+  border-radius:8px;
+  border:1px solid rgba(255,92,92,0.12);
+}
+
+/* fallback para quando user não tem deck */
+.no-deck{
+  color:var(--muted);
+  padding:12px;
+  border-radius:8px;
+  background: rgba(255,255,255,0.02);
+  border:1px dashed rgba(255,255,255,0.02);
+}

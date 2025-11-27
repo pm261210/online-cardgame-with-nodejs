@@ -5,11 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" type="text/css" href="/css/login.css">
+    <link rel="stylesheet" type="text/css" href="/css/mainScreen.css">
 </head>
 <body>
-    <h1>COMEÇO</h1>
-    <button onclick="paginabatalha()">Procurar oponente</button>
-    <button onclick="paginabaralho()">Baralhos</button>
+        <div class="container-center">
+            <div class="header-row">
+                <div class="header-left">
+                    <h1>COMEÇO</h1>
+                </div>
+                <div class="header-right">
+                    <button class="btn-primary" onclick="paginabatalha()">Procurar oponente</button>
+                    <button class="btn-primary" onclick="paginabaralho()">Baralhos</button>
+                </div>
+            </div>
     <% if(user.selectedDeck == null || user.selectedDeck == ""){ %>
         <div> nenhum deck selecionado</div>
     <% }else{ %>
@@ -18,6 +26,7 @@
     <% } %>
     <div class="texto-id">
         userid: <%= user.id %>
+    </div>
     </div>
 
     

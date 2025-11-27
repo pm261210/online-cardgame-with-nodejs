@@ -1,0 +1,141 @@
+/*
+====================================
+  ESTILOS GERAIS E LAYOUT
+====================================
+*/
+
+/* Define a fonte e remove margens padrão */
+body {
+    font-family: 'Arial', sans-serif; /* Fonte padrão e legível */
+    margin: 0;
+    padding: 0;
+    background-color: #1a1a2e; /* Fundo escuro (Roxo/Azul-Escuro) */
+    color: #e4e6eb; /* Cor do texto claro */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza horizontalmente */
+    justify-content: center; /* Centraliza verticalmente */
+    min-height: 100vh; /* Ocupa a altura total da viewport */
+    text-align: center;
+}
+
+/* Container principal para centralizar o conteúdo */
+.container {
+    padding: 30px;
+    background-color: #2c2c54; /* Fundo ligeiramente mais claro para o bloco de conteúdo */
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Sombra para profundidade */
+    max-width: 400px;
+    width: 90%;
+}
+
+/*
+====================================
+  ESTILOS DO TÍTULO (H1)
+====================================
+*/
+h1 {
+    color: #ff9900; /* Laranja forte para destaque */
+    margin-bottom: 30px;
+    font-size: 2.5em;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 5px rgba(255, 153, 0, 0.7); /* Efeito de brilho */
+}
+
+/*
+====================================
+  ESTILOS DOS BOTÕES
+====================================
+*/
+button {
+    width: 80%; /* Largura decente */
+    padding: 15px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s, box-shadow 0.3s;
+    text-transform: uppercase;
+}
+
+/* Botão principal (Procurar Oponente) */
+button:nth-child(1) { /* O primeiro botão no HTML */
+    background-color: #e74c3c; /* Vermelho vibrante (Ação de Batalha) */
+    color: white;
+    box-shadow: 0 4px 0 #c0392b; /* Sombra 3D */
+}
+
+button:nth-child(1):hover {
+    background-color: #c0392b;
+    transform: translateY(-2px); /* Efeito de flutuação */
+    box-shadow: 0 6px 0 #a02d24;
+}
+
+button:nth-child(1):active {
+    transform: translateY(2px); /* Efeito de clique */
+    box-shadow: 0 2px 0 #a02d24;
+}
+
+/* Botão secundário (Baralhos) */
+button:nth-child(2) { /* O segundo botão no HTML */
+    background-color: #3498db; /* Azul (Ação de Gerenciamento) */
+    color: white;
+    box-shadow: 0 4px 0 #2980b9;
+}
+
+button:nth-child(2):hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #206c9a;
+}
+
+button:nth-child(2):active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #206c9a;
+}
+
+/*
+====================================
+  ESTILOS DO DECK SELECIONADO
+====================================
+*/
+div {
+    margin: 15px 0;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+/* Estilo para "nenhum deck selecionado" (Alerta) */
+div:has(.texto-id) + div { /* Seleciona o div ANTES do div com a classe .texto-id, se for o de "nenhum deck" */
+    background-color: #4a1c1c; /* Fundo vermelho escuro */
+    border: 1px solid #e74c3c;
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+/* Estilo para "deck selecionado: NOME" (Sucesso) */
+div:has(.texto-id) + div { /* Se o deck estiver selecionado, este div virá antes do .texto-id */
+    background-color: #1e4d3a; /* Fundo verde escuro */
+    border: 1px solid #2ecc71;
+    color: #2ecc71;
+    font-weight: bold;
+}
+
+/*
+====================================
+  ESTILOS DO USER ID
+====================================
+*/
+.texto-id {
+    font-size: 0.8em;
+    color: #7f8c8d; /* Cinza suave */
+    margin-top: 40px;
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    display: inline-block; /* Ajusta o fundo apenas ao conteúdo */
+}
