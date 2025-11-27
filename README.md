@@ -23,4 +23,8 @@ Esse Trabalho é um jogo de cartas simples que permite uma experiência de batal
 
 </p>
 
+## Funcionalidades 
+
+
+
 ##  Tecnologias Utilizadas
