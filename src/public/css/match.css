@@ -43,28 +43,251 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
 
-    .carta-mao-selecionado{
-      width: 110px;
-      height: 154px;
-      border: 4px solid rgb(58, 157, 214);
-    }
+    .carta {
+  width: 120px;
+  height: 150px;
+  background: linear-gradient(180deg, #d2b48c 0%, #e8d4a2 100%);
+  border: 3px solid #fde400;
+  border-radius: 6px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+  position: relative;
+  overflow: hidden;
+  padding-top: 2px;
+  box-sizing: border-box;
+}
 
-    .carta-mao-opcoes{
-      width: 110px;
-      height: 154px;
-    }
+.trop{
+  background: linear-gradient(180deg, #d2b48c 0%, #e8d4a2 100%);
+}
 
-    .carta-mao:hover{
-      width: 110px;
-      height: 154px;
-      background-color: #34a52a;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    }
+.trap{
+  background: linear-gradient(180deg, #d28ccf 0%, #cd98e2 100%);
+}
 
-    .carta-oponente{
-      border: 4px solid rgb(214, 58, 58);
-    }
+.active{
+  border: 4px solid #fde400;
+}
+
+.avelable{
+  border: 4px solid rgb(58, 157, 214);
+}
+
+.inactive{
+  border: 4px solid rgb(122, 122, 122);
+}
+
+.enemy{
+  border: 4px solid rgb(214, 58, 58);;
+}
+
+/* Nome da carta */
+.carta .name {
+  font-weight: bold;
+  font-size: 0.9rem;
+  font-family: 'Roboto Condensed', sans-serif;
+  text-align: left;
+  margin-top: 1px;
+  margin-left: 4px;
+  color: #2b1e0a;
+  /*border-bottom: 2px solid #8b6b3f;*/
+}
+
+.carta .class {
+  font-weight: bold;
+  font-size: 0.7rem;
+  font-family: 'Roboto Condensed', sans-serif;
+  text-align: left;
+  margin-top: 1px;
+  margin-left: 4px;
+  color: #555555;
+  text-transform: uppercase;
+  border-bottom: 2px solid #8b6b3f;
+  padding-bottom: 1px;
+}
+
+/* Nível (as estrelas) */
+.carta .nivel {
+    font-size: 0.8rem;
+    color: gold;
+    font-weight: bold;
+    position: absolute;
+    top: 20px;
+    right: 3px;
+    display: flex;
+    align-items: flex-end;
+    width: 50px;
+    height: 12px;
+    border-radius: 50%;
+    justify-content: flex-end;
+}
+
+/* Tipo (por ex. Guerreiro) */
+.carta .tipo {
+  position: absolute;
+  top: 38px;
+  right: 10px;
+  font-size: 0.8rem;
+  color: #3a2a15;
+  font-style: italic;
+}
+
+/* Imagem central */
+.carta .card-image {
+  display: block;
+  width: 100px;
+  height: 100px;
+  margin: 2px auto;
+  border: 2px solid #8b6b3f;
+  background: #fdf8e1;
+  object-fit: contain;
+}
+
+/* Caixa de descrição */
+.carta .descrisao {
+  background: #f4e9c8;
+  border: 2px solid #8b6b3f;
+  border-radius: 4px;
+  padding: 6px;
+  margin: 6px 4px;
+  font-size: 0.8rem;
+  text-align: justify;
+  height: 80px;
+  overflow: hidden;
+}
+
+/* Barra inferior com status */
+.carta .status-bar {
+  position: absolute;
+  bottom: 2px;
+  left: -4px;
+  width: 100%;
+  text-align: right;
+  padding-right: 12px;
+  font-weight: bold;
+  color: #2b1e0a;
+  font-size: 0.7rem;
+  justify-content: center; 
+  align-items: flex-end;   
+  gap: 10px
+}
+
+.carta .status-bar img {
+  width: 18px;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+.carta .hp, .carta .atack {
+  display: inline-block;
+  margin-left: 8px;
+}
+
+/* Ícones pequenos (como coração e espada) */
+.carta .icon {
+  width: 10px;
+  height: 10px;
+  vertical-align: middle;
+}
+
+/* Cria os "lados" de cima do coração */
+.heart {
+  position: relative;
+  width: 16px;
+  height: 15px;
+  left: 90px;
+  bottom: -9px;
+  background-color: red;
+  transform: rotate(-45deg);
+  margin: 0 0px 0 0;
+}
+
+.heart::before,
+.heart::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 15px;
+  background-color: red;
+  border-radius: 50%;
+}
+
+/* Bolinha da esquerda */
+.heart::before {
+  top: -8px;
+  left: 0;
+}
+
+/* Bolinha da direita */
+.heart::after {
+  top: 0;
+  left: 8px;
+}
+
+.heart span {
+  position: absolute;
+  transform: translate(-225%, -10%) rotate(44deg);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: bold;
+  font-family: sans-serif;
+  z-index: 1;
+  pointer-events: none; /* evita interferência em cliques */
+}
+
+.sword {
+    position: relative;
+    width: 14px;
+    height: 16px;
+    left: 62px;
+    top: -8px;
+    background: #c3c3c3;
+    border-radius: 2px;
+    transform: rotate(45deg);
+}
+
+/* Ponta da espada */
+.sword::before {
+    content: "";
+    position: absolute;
+    top: -7px;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 7px solid #c3c3c3;
+}
+
+/* Punho */
+.sword::after {
+    content: "";
+    position: absolute;
+    bottom: 3px;
+    left: -2px;
+    width: 18px;
+    height: 4px;
+    box-shadow: 0 3px 0 #331a00;
+}
+
+.sword span {
+    position: absolute;
+    transform: translate(-235%, -10%) rotate(-44deg);
+    font-size: 0.9rem;
+    font-weight: bold;
+    font-family: sans-serif;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.sword span::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 8px;
+    height: 8px;
+    background: #331a00;
+    transform: rotate(135deg) translateX(14px) translatey(-3px);
+}
 
     .area-jogo {
       display: flex;

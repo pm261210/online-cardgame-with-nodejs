@@ -3,6 +3,6 @@ const router = express.Router();
 
 const socketController = require('../controllers/filaController');
 
-router.get('/', socketController.filadeespera);
+router.get('/:id', socketController.filadeespera);
 
 module.exports = router;

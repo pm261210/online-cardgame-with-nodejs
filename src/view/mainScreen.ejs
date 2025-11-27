@@ -20,100 +20,17 @@
         userid: <%= user.id %>
     </div>
 
-    <div class="divisorias">
-    <div>
-    <div class="carta trop actve" id="1">
-        <div class="name">Slime blueberry</div><div class="nivel">★★★★</div>
-        <div class="class">slime</div>
-        <img src="/images/slime blu.png" class="card-image">
-        <div class="status-bar">
-        <div class="heart">    <span class="hp">2</span></div>
-        <div class="sword">    <span class="atack">1</span></div>
-        </div>
-    </div>
-
-    <div class="carta trop inactve" id="1">
-        <div class="name">Slime blueberry</div><div class="nivel">★★★★</div>
-        <div class="class">slime</div>
-        <img src="/images/slime blu.png" class="card-image">
-        <div class="status-bar">
-        <div class="heart">    <span class="hp">2</span></div>
-        <div class="sword">    <span class="atack">1</span></div>
-        </div>
-    </div>
-
-    <div class="carta trop avelable" id="1">
-        <div class="name">Slime blueberry</div><div class="nivel">★★★★</div>
-        <div class="class">slime</div>
-        <img src="/images/slime blu.png" class="card-image">
-        <div class="status-bar">
-        <div class="heart">    <span class="hp">2</span></div>
-        <div class="sword">    <span class="atack">1</span></div>
-        </div>
-    </div>
-
-    <div class="carta trop enemy" id="1">
-        <div class="name">Slime blueberry</div><div class="nivel">★★★★</div>
-        <div class="class">slime</div>
-        <img src="/images/slime blu.png" class="card-image">
-        <div class="status-bar">
-        <div class="heart">    <span class="hp">2</span></div>
-        <div class="sword">    <span class="atack">1</span></div>
-        </div>
-    </div>
-</div>
-<div>
-    <div class="carta trap actve" id="1">
-        <div class="name">Slime blueberry</div>
-        <div class="class">slime</div>
-        <div class="border"><img src="/images/slime blu.png" class="card-image"></div>
-        <div class="status-bar">
-        <div class="rowrange">  <span>1</span></div>
-        <div class="collumrange">   <span>2</span></div>
-        <div class="delay">    <span class="hp">2</span></div>
-        </div>
-    </div>
-
-    <div class="carta trap inactve" id="1">
-        <div class="name">Slime blueberry</div>
-        <div class="class">slime</div>
-        <div class="border"><img src="/images/slime blu.png" class="card-image"></div>
-        <div class="status-bar">
-        <div class="rowrange">  <span>1</span></div>
-        <div class="collumrange">   <span>2</span></div>
-        <div class="delay">    <span class="hp">2</span></div>
-        </div>
-    </div>
-
-    <div class="carta trap avelable" id="1">
-        <div class="name">Slime blueberry</div>
-        <div class="class">slime</div>
-        <div class="border"><img src="/images/slime blu.png" class="card-image"></div>
-        <div class="status-bar">
-        <div class="rowrange">  <span>1</span></div>
-        <div class="collumrange">   <span>2</span></div>
-        <div class="delay">    <span class="hp">2</span></div>
-        </div>
-    </div>
-
-    <div class="carta trap enemy" id="1">
-        <div class="name">Slime blueberry</div>
-        <div class="class">slime</div>
-        <div class="border"><img src="/images/slime blu.png" class="card-image"></div>
-        <div class="status-bar">
-        <div class="rowrange">  <span>1</span></div>
-        <div class="collumrange">   <span>2</span></div>
-        <div class="delay">    <span class="hp">2</span></div>
-        </div>
-</div>
-</div>
-</div>
+    
 </body>
 <script>
     let buffer = "";  
 
     function paginabatalha(){
-        window.location.href = '/filadeespera';
+        <% if(user.selectedDeck == null || user.selectedDeck == ""){ %>
+            alert('você precisa de um baralho selecionado para batalhar');
+        <% }else{ %>
+            window.location.href = '/filadeespera/<%= user.id %>';
+        <% } %>
     }
 
     function paginabaralho(){

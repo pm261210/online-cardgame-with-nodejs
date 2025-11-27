@@ -13,13 +13,12 @@
 
     <!-- Mão do jogador de cima -->
     <div class="mao">
-      <% const playerRole = players[playerid]; %>
       <% if (playerRole === 'player1') { %>
-        <% state.player2.hand.forEach(c => { %>
+        <% match.state.player2.hand.forEach(c => { %>
           <div class="carta-mao"></div>
         <% }); %>
       <% } else { %>
-        <% state.player1.hand.forEach(c => { %>
+        <% match.state.player1.hand.forEach(c => { %>
           <div class="carta-mao"></div>
         <% }); %>
       <% } %>
@@ -29,8 +28,14 @@
     <div class="area-jogo">
       <!-- Pilhas de descarte (esquerda) -->
       <div class="coluna-lateral">
-        <div class="descarte"></div>
-        <div class="descarte"></div>
+        <div class="descarte">
+          <% if(playerRole == 'player1'){ %> 
+            <%= match.state.player2.discardpile.length %>
+          <% }else{ %>
+            <%= match.state.player1.discardpile.length %>
+          <% } %>
+        </div>
+        <div class="descarte"><%= match.state[playerRole].discardpile.length %> </div>
       </div>
 
       <!-- Campo 5x5 -->
@@ -39,22 +44,67 @@
         <!-- Linha 5 a 1 e colunas 1 a 5 -->
         <!-- IDs de 1-5 até 5-1, como no seu exemplo -->
          <% if(playerRole == 'player1'){ %>
-          <% state.campo.forEach(r => { %>
+          <% match.state.field.forEach(r => { %>
             <% r.forEach(c => { %>
               <% if(c.content.length != 0 && c.content[0].owner != playerRole && c.attacable != undefined){ %>
                 <div style="position: relative; display: inline-block;">
                   <div class="alvo" onclick="attack('<%= c.carta %>', '<%= c.id %>')"></div>
-                  <div class="tile-ocupado carta-oponente" style="width: 100%; height: 100%;" onclick="attack('<%= c.carta %>', '<%= c.id %>')"><%= c.id %></div>
+                  <div class="carta <%= c.content[0].card.type %> enemy" onclick="attack('<%= c.carta %>', '<%= c.id %>')" data-id="<%= c.id %>">
+                    <div class="name"><%= c.content[0].card.name %></div>
+                    <div class="nivel"><%= '★'.repeat(c.content[0].card.level) %></div>
+                    <div class="class"><%= c.content[0].card.class %></div>
+                    <img src="/images/<%= c.content[0].card.image %>" class="card-image">
+                    <div class="status-bar">
+                        <div class="heart"><span class="hp"><%= c.content[0].card.currenthp %></span></div>
+                        <div class="sword"><span class="atack"><%= c.content[0].card.currentatk %></span></div>
+                    </div>
+                </div>
                 </div>
               <% }else if(c.content.length != 0 && c.content[0].owner != playerRole){ %>
-                <div class="tile-ocupado carta-oponente" id="<%= c.id %>"><%= c.content[0].card.currenthp %>/<%= c.content[0].hp %></div>
+                <div class="carta <%= c.content[0].card.type %> enemy" data-id="<%= c.id %>">
+                    <div class="name"><%= c.content[0].card.name %></div>
+                    <div class="nivel"><%= '★'.repeat(c.content[0].card.level) %></div>
+                    <div class="class"><%= c.content[0].card.class %></div>
+                    <img src="/images/<%= c.content[0].card.image %>" class="card-image">
+                    <div class="status-bar">
+                        <div class="heart"><span class="hp"><%= c.content[0].card.currenthp %></span></div>
+                        <div class="sword"><span class="atack"><%= c.content[0].card.currentatk %></span></div>
+                    </div>
+                </div>
               <% }else if(c.content.length != 0 && c.content[0].selecionado != undefined){ %>
-                <div class="carta-mao-selecionado tile-ocupado" id="<%= c.id %>" onclick="desselecionaCarta()"><%= c.content[0].card.currenthp %>/<%= c.content[0].hp %></div>
-              <% }else if(c.content.length != 0 && state.turnplayer != playerRole){ %>
-                <div class="tile-ocupado" id="<%= c.id %>"><%= c.content[0].card.currenthp %>/<%= c.content[0].hp %></div>
+                <div class="carta <%= c.content[0].card.type %> active" onclick="desselecionaCarta('<%= c.carta %>', '<%= c.id %>')" data-id="<%= c.id %>">
+                    <div class="name"><%= c.content[0].card.name %></div>
+                    <div class="nivel"><%= '★'.repeat(c.content[0].card.level) %></div>
+                    <div class="class"><%= c.content[0].card.class %></div>
+                    <img src="/images/<%= c.content[0].card.image %>" class="card-image">
+                    <div class="status-bar">
+                        <div class="heart"><span class="hp"><%= c.content[0].card.currenthp %></span></div>
+                        <div class="sword"><span class="atack"><%= c.content[0].card.currentatk %></span></div>
+                    </div>
+                </div>
+              <% }else if(c.content.length != 0 && match.state.turnplayer != playerRole){ %>
+                <div class="carta <%= c.content[0].card.type %> inactive" data-id="<%= c.id %>">
+                    <div class="name"><%= c.content[0].card.name %></div>
+                    <div class="nivel"><%= '★'.repeat(c.content[0].card.level) %></div>
+                    <div class="class"><%= c.content[0].card.class %></div>
+                    <img src="/images/<%= c.content[0].card.image %>" class="card-image">
+                    <div class="status-bar">
+                        <div class="heart"><span class="hp"><%= c.content[0].card.currenthp %></span></div>
+                        <div class="sword"><span class="atack"><%= c.content[0].card.currentatk %></span></div>
+                    </div>
+                </div>
               <% }else if(c.content.length != 0){ %>
-                <div class="tile-ocupado" id="<%= c.id %>" onclick="espacosDisponiveis('<%= c.content[0].id %>', '<%= c.content[0].card.movementfun %>', '<%= c.content[0].card.attackfun %>')"><%= c.content[0].card.currenthp %>/<%= c.content[0].hp %></div>
-              <% }else if(playerRole != state.turnplayer){ %>
+                <div class="carta <%= c.content[0].card.type %> avelable" onclick="espacosDisponiveis('<%= c.content[0].id %>', '<%= c.content[0].card.movementfun %>', '<%= c.content[0].card.atkfun %>')" data-id="<%= c.id %>">
+                    <div class="name"><%= c.content[0].card.name %></div>
+                    <div class="nivel"><%= '★'.repeat(c.content[0].card.level) %></div>
+                    <div class="class"><%= c.content[0].card.class %></div>
+                    <img src="/images/<%= c.content[0].card.image %>" class="card-image">
+                    <div class="status-bar">
+                        <div class="heart"><span class="hp"><%= c.content[0].card.currenthp %></span></div>
+                        <div class="sword"><span class="atack"><%= c.content[0].card.currentatk %></span></div>
+                    </div>
+                </div>
+              <% }else if(playerRole != match.state.turnplayer){ %>
                 <div class="tile" id="<%= c.id %>"><%= c.id %></div>
               <% }else if(c.disponivel == true){ %>
                 <div class="tiledisponivel" id="<%= c.id %>" onclick="movimentaCarta('<%= c.carta %>', '<%= c.id %>')"><%= c.id %></div>
@@ -64,22 +114,67 @@
             <% }); %>
           <% }); %>
         <% }else{ %>
-          <% state.campo.slice().reverse().forEach(r => { %>
+          <% match.state.field.slice().reverse().forEach(r => { %>
             <% r.slice().reverse().forEach(c => { %>
               <% if(c.content.length != 0 && c.content[0].owner != playerRole && c.attacable != undefined){ %>
                 <div style="position: relative; display: inline-block;">
                   <div class="alvo" onclick="attack('<%= c.carta %>', '<%= c.id %>')"></div>
-                  <div class="tile-ocupado carta-oponente" style="width: 100%; height: 100%;" onclick="attack('<%= c.carta %>', '<%= c.id %>')"><%= c.id %></div>
+                  <div class="carta <%= c.content[0].card.type %> enemy" onclick="attack('<%= c.carta %>', '<%= c.id %>')" data-id="<%= c.id %>">
+                    <div class="name"><%= c.content[0].card.name %></div>
+                    <div class="nivel"><%= '★'.repeat(c.content[0].card.level) %></div>
+                    <div class="class"><%= c.content[0].card.class %></div>
+                    <img src="/images/<%= c.content[0].card.image %>" class="card-image">
+                    <div class="status-bar">
+                        <div class="heart"><span class="hp"><%= c.content[0].card.currenthp %></span></div>
+                        <div class="sword"><span class="atack"><%= c.content[0].card.currentatk %></span></div>
+                    </div>
+                </div>
                 </div>
               <% }else if(c.content.length != 0 && c.content[0].owner != playerRole){ %>
-                <div class="tile-ocupado carta-oponente" id="<%= c.id %>"><%= c.content[0].card.currenthp %>/<%= c.content[0].hp %></div>
+                <div class="carta <%= c.content[0].card.type %> enemy" data-id="<%= c.id %>">
+                    <div class="name"><%= c.content[0].card.name %></div>
+                    <div class="nivel"><%= '★'.repeat(c.content[0].card.level) %></div>
+                    <div class="class"><%= c.content[0].card.class %></div>
+                    <img src="/images/<%= c.content[0].card.image %>" class="card-image">
+                    <div class="status-bar">
+                        <div class="heart"><span class="hp"><%= c.content[0].card.currenthp %></span></div>
+                        <div class="sword"><span class="atack"><%= c.content[0].card.currentatk %></span></div>
+                    </div>
+                </div>
               <% }else if(c.content.length != 0 && c.content[0].selecionado != undefined){ %>
-                <div class="carta-mao-selecionado tile-ocupado" id="<%= c.id %>" onclick="desselecionaCarta('<%= c.carta %>', '<%= c.id %>')"><%= c.content[0].card.currenthp %>/<%= c.content[0].hp %></div>
-              <% }else if(c.content.length != 0 && state.turnplayer != playerRole){ %>
-                <div class="tile-ocupado" id="<%= c.id %>"><%= c.content[0].id %></div>
+                <div class="carta <%= c.content[0].card.type %> active" onclick="desselecionaCarta('<%= c.carta %>', '<%= c.id %>')" data-id="<%= c.id %>">
+                    <div class="name"><%= c.content[0].card.name %></div>
+                    <div class="nivel"><%= '★'.repeat(c.content[0].card.level) %></div>
+                    <div class="class"><%= c.content[0].card.class %></div>
+                    <img src="/images/<%= c.content[0].card.image %>" class="card-image">
+                    <div class="status-bar">
+                        <div class="heart"><span class="hp"><%= c.content[0].card.currenthp %></span></div>
+                        <div class="sword"><span class="atack"><%= c.content[0].card.currentatk %></span></div>
+                    </div>
+                </div>
+              <% }else if(c.content.length != 0 && match.state.turnplayer != playerRole){ %>
+                <div class="carta <%= c.content[0].card.type %> inactive" data-id="<%= c.id %>">
+                    <div class="name"><%= c.content[0].card.name %></div>
+                    <div class="nivel"><%= '★'.repeat(c.content[0].card.level) %></div>
+                    <div class="class"><%= c.content[0].card.class %></div>
+                    <img src="/images/<%= c.content[0].card.image %>" class="card-image">
+                    <div class="status-bar">
+                        <div class="heart"><span class="hp"><%= c.content[0].card.currenthp %></span></div>
+                        <div class="sword"><span class="atack"><%= c.content[0].card.currentatk %></span></div>
+                    </div>
+                </div>
               <% }else if(c.content.length != 0){ %>
-                <div class="tile-ocupado" id="<%= c.id %>" onclick="espacosDisponiveis('<%= c.content[0].id %>', '<%= c.content[0].card.movementfun %>', '<%= c.content[0].card.attackfun %>')"><%= c.content[0].card.currenthp %>/<%= c.content[0].hp %></div>
-              <% }else if(playerRole != state.turnplayer){ %>
+                <div class="carta <%= c.content[0].card.type %> avelable" onclick="espacosDisponiveis('<%= c.content[0].id %>', '<%= c.content[0].card.movementfun %>', '<%= c.content[0].card.atkfun %>')" data-id="<%= c.id %>">
+                    <div class="name"><%= c.content[0].card.name %></div>
+                    <div class="nivel"><%= '★'.repeat(c.content[0].card.level) %></div>
+                    <div class="class"><%= c.content[0].card.class %></div>
+                    <img src="/images/<%= c.content[0].card.image %>" class="card-image">
+                    <div class="status-bar">
+                        <div class="heart"><span class="hp"><%= c.content[0].card.currenthp %></span></div>
+                        <div class="sword"><span class="atack"><%= c.content[0].card.currentatk %></span></div>
+                    </div>
+                </div>
+                <% }else if(playerRole != match.state.turnplayer){ %>
                 <div class="tile" id="<%= c.id %>"><%= c.id %></div>
               <% }else if(c.disponivel == true){ %>
                 <div class="tiledisponivel" id="<%= c.id %>" onclick="movimentaCarta('<%= c.carta %>', '<%= c.id %>')"><%= c.id %></div>
@@ -93,35 +188,77 @@
 
       <!-- Pilhas de baralho (direita) -->
       <div class="coluna-direita">
-        <div class="baralho" id="baralho2"></div>
-        <% if(playerRole == state.turnplayer){ %>
+        <div class="baralho" id="baralho2">
+          <% if(playerRole == 'player1'){ %> 
+            <%= match.state.player2.deck.length %>
+          <% }else{ %>
+            <%= match.state.player1.deck.length %>
+          <% } %>
+        </div>
+        <% if(playerRole == match.state.turnplayer){ %>
           <div class="botaoturno" onclick="turnChange()">terminar turno</div>
         <% } %>
-        <div class="baralho" id="baralho1"></div>
+        <div class="baralho" id="baralho1"> <%= match.state[playerRole].deck.length %>  </div>
       </div>
     </div>
     
 
     <!-- Mão do jogador de baixo -->
     <div class="mao" id="mao1">
-        <% state[playerRole].hand.forEach(c => { %>
-          <% if(state.turnplayer != playerRole){ %>
-            <div class="carta-mao"><%= c.id %></div>
+        <% match.state[playerRole].hand.forEach(c => { %>
+          <% if(match.state.turnplayer != playerRole){ %>
+            <div class="carta <%= c.card.type %> inactive" data-id="<%= c.id %>">
+                    <div class="name"><%= c.card.name %></div>
+                    <div class="nivel"><%= '★'.repeat(c.card.level) %></div>
+                    <div class="class"><%= c.card.class %></div>
+                    <img src="/images/<%= c.card.image %>" class="card-image">
+                    <div class="status-bar">
+                        <div class="heart"><span class="hp"><%= c.card.hp %></span></div>
+                        <div class="sword"><span class="atack"><%= c.card.atk %></span></div>
+                    </div>
+                </div>
           <% }else if(c.opcoes != undefined){ %>
             <div style="position: relative; display: inline-block;">
-              <div class="circulo" onclick="espacosDisponiveis('<%= c.id %>', '<%= c.card.movementfun %>', '<%= c.card.attackfun %>')"></div>
-              <div class="carta-mao carta-mao-opcoes" onclick="desselecionaCarta()"><%= c.id %></div>
+              <div class="circulo" onclick="espacosDisponiveis('<%= c.id %>', '<%= c.card.movementfun %>', '<%= c.card.atkfun %>')"></div>
+              <div class="carta <%= c.card.type %> avelable" onclick="desselecionaCarta()" data-id="<%= c.id %>">
+                    <div class="name"><%= c.card.name %></div>
+                    <div class="nivel"><%= '★'.repeat(c.card.level) %></div>
+                    <div class="class"><%= c.card.class %></div>
+                    <img src="/images/<%= c.card.image %>" class="card-image">
+                    <div class="status-bar">
+                        <div class="heart"><span class="hp"><%= c.card.hp %></span></div>
+                        <div class="sword"><span class="atack"><%= c.card.atk %></span></div>
+                    </div>
+                </div>
             </div>
           <% }else if(c.selecionado != undefined){ %>
-            <div class="carta-mao carta-mao-selecionado"><%= c.id %></div>
+            <div class="carta <%= c.card.type %> active" data-id="<%= c.id %>">
+                    <div class="name"><%= c.card.name %></div>
+                    <div class="nivel"><%= '★'.repeat(c.card.level) %></div>
+                    <div class="class"><%= c.card.class %></div>
+                    <img src="/images/<%= c.card.image %>" class="card-image">
+                    <div class="status-bar">
+                        <div class="heart"><span class="hp"><%= c.card.hp %></span></div>
+                        <div class="sword"><span class="atack"><%= c.card.atk %></span></div>
+                    </div>
+                </div>
           <% }else{ %>
-            <div class="carta-mao" onclick="opcoesCarta('<%= c.id %>')"><%= c.id %></div>
+            <div class="carta <%= c.card.type %> avelable" onclick="opcoesCarta('<%= c.id %>')" data-id="<%= c.id %>">
+                    <div class="name"><%= c.card.name %></div>
+                    <div class="nivel"><%= '★'.repeat(c.card.level) %></div>
+                    <div class="class"><%= c.card.class %></div>
+                    <img src="/images/<%= c.card.image %>" class="card-image">
+                    <div class="status-bar">
+                        <div class="heart"><span class="hp"><%= c.card.hp %></span></div>
+                        <div class="sword"><span class="atack"><%= c.card.atk %></span></div>
+                    </div>
+              </div>
           <% } %>
         <% }); %>
     </div>
 
   </div>
-  <% if(playerRole == state.turnplayer){ %>
+  <% if(playerRole == match.state.turnplayer){ %>
       <p>Seu turno</p>
   <% }else{ %>
       <p>Turno do oponente</p>
@@ -134,10 +271,13 @@
     const socket = io();
     const playerId = '<%= playerid %>';
     const roomId = localStorage.getItem('roomId');
+
+    console.log(<%- JSON.stringify(match) %>)
+
     let game = {
         roomId: <%- JSON.stringify(roomId) %>,
-        state: <%- JSON.stringify(state) %>,
-        players: <%- JSON.stringify(players) %>,
+        state: <%- JSON.stringify(match.state) %>,
+        players: <%- JSON.stringify(match.players) %>,
         jogador: playerId,//<%- JSON.stringify(playerid) %>
       }
     // Reentrar na sala após recarregamento
@@ -154,50 +294,52 @@
     //selecionando carta
     function opcoesCarta(id){
       socket.emit('opcoesCarta', {
-            roomId: game.roomId,  
+            roomId: roomId,  
             idcarta: id,
         });
     }
 
     function desselecionaCarta(){
-      socket.emit('opcoesCarta', {
-            roomId: game.roomId,  
+      socket.emit('desselecionaCarta', {
+            roomId: roomId,  
         });
     }
 
     function espacosDisponiveis(carta, movementfun, attackfun){
       socket.emit('espacosDisponiveis', {
-            roomId: game.roomId,  
+            roomId: roomId,  
             idcarta: carta,
             movement: movementfun,
             attack: attackfun,
+            role: '<%= playerRole %>'
         });
     }
 
     function movimentaCarta(carta, espaco){
       socket.emit('movimentaCarta', {
-            roomId: game.roomId,
+            roomId: roomId,
             idcarta: carta,
             idespaco: espaco,
+            role: '<%= playerRole %>'
         });
     }
 
     function turnChange(){
       socket.emit('turnChange', {
-            roomId: game.roomId,
+            roomId: roomId,
         });
     }
 
     function attack(carta, espaco){
       socket.emit('danificaCarta', {
-            roomId: game.roomId,
+            roomId: roomId,
             idcarta: carta,
             idespaco: espaco,
         });
     }
 
     socket.on('stateUpdate', (data) => {
-      window.location.href = `/match/${game.roomId}?playerid=${game.jogador}`;
+      window.location.href = `/match/${roomId}?playerid=${game.jogador}`;
     });
 
     socket.on('playerDisconnected', () => {

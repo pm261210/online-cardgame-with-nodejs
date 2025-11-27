@@ -1,162 +1,181 @@
 const { v4: uuidv4 } = require('uuid');
-const matchModel = require('../models/matchModel');
-
+const Match = require('../models/matchModel');
+const matchInitial = require('../models/match/matchInitial');
+const matchAttack = require('../models/match/attackModel');
+const matchMoviment = require('../models/match/movementModel');
 
 let waitingPlayer = null;
 let waitingPlayerId = null;
-let matches = {}; // Estado das partidas: { roomId: { players, state } }
-let playerIdentities = {}; 
+let playerId = null;
 
 module.exports = (io) => {
   io.on('connection', (socket) => {
+
     
-    playerIdentities[socket.id] = socket.id;
-    const playerId = uuidv4();
-    //console.log('Novo jogador conectado: ' + playerId);
 
-    if (waitingPlayer === null) {
-      waitingPlayerId = playerId;
-      waitingPlayer = socket;
-      socket.emit('waitingForOpponent');
-    } else {
-      const roomId = uuidv4();
-      socket.join(roomId);
-      waitingPlayer.join(roomId);
+    // --------------------------
+    // MATCHMAKING
+    // --------------------------
+    socket.on("registerPlayer", async({ playerId: incomingId }) => {
+        playerId = incomingId;
+        console.log("Jogador registrado:", playerId);
 
-      const state = matchModel.createInitialGameState();
-      //console.log('ID sala: ' + roomId); matchModel
+        // só depois de registrar você pode colocar ele na fila
 
-      matches[roomId] = {
-        players: {
-          [waitingPlayer.id]: { id: waitingPlayerId, role: 'player1', socketId: waitingPlayer.id },
-          [socket.id]: { id: playerId, role: 'player2', socketId: socket.id }
-        },
-        state,
-      };
+        if (!waitingPlayer) {
+          waitingPlayer = socket;
+          waitingPlayerId = playerId;
+          socket.emit('waitingForOpponent');
+        } else {
+          const roomId = uuidv4();
+          socket.join(roomId);
+          waitingPlayer.join(roomId);
 
+          console.log('waitingPlayer: '+waitingPlayerId)
+          console.log('Player: '+playerId)
+          const state = await matchInitial.createInitialGameState(waitingPlayerId, playerId);
 
-      io.to(roomId).emit('gameStart', {
-        roomId,
-        state,
-        players: matches[roomId].players,//Object.keys(matches[roomId].players),
-      });
+          const players = {
+            [waitingPlayer.id]: { id: waitingPlayerId, role: 'player1', socketId: waitingPlayer.id },
+            [socket.id]: { id: playerId, role: 'player2', socketId: socket.id }
+          };
 
+          // 👉 SALVA MATCH NO BANCO
+          matchInitial.createMatch(roomId, players, state);
 
-      waitingPlayer = null;
-    }
+          io.to(roomId).emit('gameStart', {
+            roomId,
+            state,
+            players
+          });
 
-    socket.on('joinRoom', ({ roomId, playerId }) => {
-      const match = matches[roomId];
+          waitingPlayer = null;
+        }
+
+    });
+
+    
+
+    // --------------------------
+    // JOIN ROOM DE VOLTA
+    // --------------------------
+    socket.on('joinRoom', async ({ roomId, playerId }) => {
+      const match = await matchInitial.getMatch(roomId);
       if (!match) return;
 
-      const oldEntry = Object.entries(match.players).find(
-        ([_, player]) => player.id === playerId
-      );
+      const players = match.players;
 
+      const oldEntry = Object.entries(players).find(
+        ([_, p]) => p.id === playerId
+      );
       if (!oldEntry) return;
 
       const [oldSocketId, playerData] = oldEntry;
-      // Atualiza socketId
-      delete match.players[oldSocketId];
-      match.players[socket.id] = { ...playerData, socketId: socket.id };
-      //console.log(match.state);
+
+      delete players[oldSocketId];
+      players[socket.id] = { ...playerData, socketId: socket.id };
+
+      await matchInitial.updateMatch(roomId, { players });
 
       socket.join(roomId);
     });
 
-  socket.on('opcoesCarta', ({roomId, idcarta}) => {
-    if (!matches[roomId]) return;
-    const match = matches[roomId];
 
-    const playerData = match.players[socket.id];
-    if (!playerData) return;
-    const role = playerData.role;
+    // --------------------------
+    // LÓGICA DO JOGO (exemplo)
+    // --------------------------
+    socket.on('opcoesCarta', async ({ roomId, idcarta }) => {
+      const match = await matchInitial.getMatch(roomId);
+      if (!match) return;
 
-    match.state = matchModel.descelecionaCartas(match);
-    match.state = matchModel.opcoesCarta(match, role, idcarta);
+      const players = match.players;
+      const state = match.state;
 
-    io.to(roomId).emit('stateUpdate', {
-      roomId,
-      state: match.state,
-      players: matchModel.serializePlayers(match.players),
+      const playerData = players[socket.id];
+      if (!playerData) return;
+
+      const role = playerData.role;
+
+      let newState = matchInitial.descelecionaCartas({ players, state });
+      newState = matchInitial.opcoesCarta({ players, state: newState }, role, idcarta);
+
+      await matchInitial.updateMatch(roomId, { state: newState });
+
+      io.to(roomId).emit('stateUpdate', {
+        roomId,
+        state: newState,
+        players
+      });
     });
+
+
+    socket.on('turnChange', async ({ roomId }) => {
+      const match = await matchInitial.getMatch(roomId);
+      if (!match) return;
+
+      const newState = matchInitial.turnChange({
+        players: match.players,
+        state: match.state
+      });
+
+      await matchInitial.updateMatch(roomId, { state: newState });
+
+      io.to(roomId).emit('stateUpdate', newState);
+    });
+
+
+
+    socket.on('espacosDisponiveis', async ({ roomId, idcarta, movement, attack, role }) => {
+      const match = await matchInitial.getMatch(roomId);
+      if (!match) return;
+
+
+      let newState = matchInitial.descelecionaCartas(match);
+      newState = matchAttack[attack](match, role, idcarta);
+      newState = matchMoviment[movement](match, role, idcarta);
+
+      await matchInitial.updateMatch(roomId, { state: newState });
+
+      io.to(roomId).emit('stateUpdate', newState);
+    });
+
+    socket.on('movimentaCarta', async({roomId, idcarta, idespaco, role}) => {
+    const match = await matchInitial.getMatch(roomId);
+      if (!match) return;
+
+    let newState = matchInitial.movimentaCarta(match, role, idcarta, idespaco);
+
+    await matchInitial.updateMatch(roomId, { state: newState });
+
+    io.to(roomId).emit('stateUpdate', newState);
   });
 
-  socket.on('espacosDisponiveis', ({roomId, idcarta, movement, attack}) => {
-    if (!matches[roomId]) return;
-    const match = matches[roomId];
+  socket.on('danificaCarta', async({roomId, idcarta, idespaco, role}) => {
+    const match = await matchInitial.getMatch(roomId);
+      if (!match) return;
 
-    const playerData = match.players[socket.id];
-    if (!playerData) return;
-    const role = playerData.role;
+    let newState = matchInitial.danificaCarta(match, idcarta, idespaco, role);
 
-    match.state = matchModel.descelecionaCartas(match);
-    match.state = matchModel[attack](match, role, idcarta);
-    match.state = matchModel[movement](match, role, idcarta);
-    
-    io.to(roomId).emit('stateUpdate', {
-      roomId,
-      state: match.state,
-      players: matchModel.serializePlayers(match.players),
-    });
+    await matchInitial.updateMatch(roomId, { state: newState });
+
+    io.to(roomId).emit('stateUpdate', newState);
   });
 
+  socket.on('desselecionaCarta', async({roomId}) => {
+    const match = await matchInitial.getMatch(roomId);
+      if (!match) return;
 
-  socket.on('movimentaCarta', ({roomId, idcarta, idespaco}) => {
-    if (!matches[roomId]) return;
-    const match = matches[roomId];
+    let newState = matchInitial.descelecionaCartas(match);
 
-    const playerData = match.players[socket.id];
-    if (!playerData) return;
-    const role = playerData.role;
-
-    match.state = matchModel.movimentaCarta(match, role, idcarta, idespaco);
-
-    io.to(roomId).emit('stateUpdate', {
-      roomId,
-      state: match.state,
-      players: matchModel.serializePlayers(match.players),
-    });
+    io.to(roomId).emit('stateUpdate', newState);
   });
 
-  socket.on('danificaCarta', ({roomId, idcarta, idespaco}) => {
-    if (!matches[roomId]) return;
-    const match = matches[roomId];
-
-    const playerData = match.players[socket.id];
-    if (!playerData) return;
-    const role = playerData.role;
-
-    match.state = matchModel.danificaCarta(match, idcarta, idespaco, role);
-    match.state = matchModel.descelecionaCartas(match);
-
-    io.to(roomId).emit('stateUpdate', {
-      roomId,
-      state: match.state,
-      players: matchModel.serializePlayers(match.players),
-    });
-  });
-
-  socket.on('turnChange', ({ roomId}) => {
-      if (!matches[roomId]) return;
-      const match = matches[roomId];
-
-      match.state = matchModel.descelecionaCartas(match);
-      match.state = matchModel.turnChange(match);
-      // Enviar estado atualizado para ambos os jogadores
-      io.to(roomId).emit('stateUpdate', match.state);
-    });
 
     socket.on('disconnect', () => {
       if (waitingPlayer && waitingPlayer.id === socket.id) {
         waitingPlayer = null;
       }
-
-      
     });
 
-});  
+  });
 };
-
-
-module.exports.matches = matches;

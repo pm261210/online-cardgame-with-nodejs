@@ -36,6 +36,10 @@
   box-sizing: border-box;
 }
 
+.carta::hover{
+  scale: 1.05;
+}
+
 .trop{
   background: linear-gradient(180deg, #d2b48c 0%, #e8d4a2 100%);
 }
